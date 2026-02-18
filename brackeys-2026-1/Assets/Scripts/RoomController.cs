@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using Mono.Cecil.Cil;
 
 public class RoomController : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class RoomController : MonoBehaviour
     private List<AnomalousObject> objectsInRoom = new();
 
     private GameObject activeRoomInstance;
+    private List<AnomalousObject> activeAnomalies = new List<AnomalousObject>();
 
     void Start()
     {
@@ -24,6 +26,7 @@ public class RoomController : MonoBehaviour
     void LoadRoom(RoomData roomData)
     {
         if (activeRoomInstance != null) Destroy(activeRoomInstance);
+        activeAnomalies.Clear();
         
         currentRoomData = roomData;
         if (currentRoomData == null)
@@ -38,13 +41,19 @@ public class RoomController : MonoBehaviour
     }
     void InitializeRoom(RoomData roomData)
     {
-        objectsInRoom = GetComponentsInChildren<AnomalousObject>().ToList();
+        objectsInRoom = activeRoomInstance.GetComponentsInChildren<AnomalousObject>().ToList();
 
         foreach (var obj in objectsInRoom) obj.SetAnomaly(false);
-        
-        var randomObjects = objectsInRoom.OrderBy(x => Random.value).Take(roomData.anomalyCount);
-        foreach (var obj in randomObjects)
+        Debug.Log("Active anomalies count: " + activeAnomalies.Count);
+        if (activeAnomalies.Count == 0)
         {
+            var randomObjects = objectsInRoom.OrderBy(x => Random.value).Take(roomData.anomalyCount);
+            foreach (var obj in randomObjects) activeAnomalies.Add(obj);
+        }
+        Debug.Log("Active anomalies count after: " + activeAnomalies.Count);
+        foreach (var obj in activeAnomalies)
+        {
+            Debug.Log("Setting anomaly active on: " + obj.gameObject.name);
             obj.SetAnomaly(true);
         }
     }
