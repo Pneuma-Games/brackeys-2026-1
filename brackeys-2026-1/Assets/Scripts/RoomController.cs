@@ -12,7 +12,6 @@ public class RoomController : MonoBehaviour
     private List<AnomalousObject> objectsInRoom = new();
 
     private GameObject activeRoomInstance;
-    private List<AnomalousObject> activeAnomalies = new List<AnomalousObject>();
 
     void Start()
     {
@@ -26,7 +25,6 @@ public class RoomController : MonoBehaviour
     void LoadRoom(RoomData roomData)
     {
         if (activeRoomInstance != null) Destroy(activeRoomInstance);
-        activeAnomalies.Clear();
         
         currentRoomData = roomData;
         if (currentRoomData == null)
@@ -42,20 +40,14 @@ public class RoomController : MonoBehaviour
     void InitializeRoom(RoomData roomData)
     {
         objectsInRoom = activeRoomInstance.GetComponentsInChildren<AnomalousObject>().ToList();
+        RandomizeAnomalies();
+    }
 
+    void RandomizeAnomalies()
+    {
         foreach (var obj in objectsInRoom) obj.SetAnomaly(false);
-        Debug.Log("Active anomalies count: " + activeAnomalies.Count);
-        if (activeAnomalies.Count == 0)
-        {
-            var randomObjects = objectsInRoom.OrderBy(x => Random.value).Take(roomData.anomalyCount);
-            foreach (var obj in randomObjects) activeAnomalies.Add(obj);
-        }
-        Debug.Log("Active anomalies count after: " + activeAnomalies.Count);
-        foreach (var obj in activeAnomalies)
-        {
-            Debug.Log("Setting anomaly active on: " + obj.gameObject.name);
-            obj.SetAnomaly(true);
-        }
+        var randomObjects = objectsInRoom.OrderBy(x => Random.value).Take(currentRoomData.anomalyCount);
+        foreach (var obj in randomObjects) obj.SetAnomaly(true);
     }
 
     public void OnPlayerTryExit()
@@ -65,6 +57,7 @@ public class RoomController : MonoBehaviour
         if (anyAnomaliesLeft)
         {
             Debug.Log("Failed! Anomaly still present. Resetting...");
+            RandomizeAnomalies();
             ResetPlayer();
         }
         else
