@@ -1,53 +1,54 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
-using Mono.Cecil.Cil;
 
 public class RoomController : MonoBehaviour
 {
-    public RoomData currentRoomData;
-    public List<RoomData> allRooms;
     public Transform playerTransform;
     public Transform startPoint;
-    private List<AnomalousObject> objectsInRoom = new();
+    public GameObject roomPrefab;
 
-    private GameObject activeRoomInstance;
+    private List<AnomalousObject> objectsInRoom = new();
+    private Queue<AnomalousObject> anomalyBag = new();
+
+    private int maxAnomaliesPerRound = 2;
+    private int currentRound = 0;
 
     void Start()
     {
-        if (allRooms == null || allRooms.Count == 0)
-        {
-            Debug.LogError("No rooms assigned in RoomController!");
-            return;
-        }
-        LoadRoom(allRooms[0]);
+        InitializeRoom();
+        FillAnomalyBag();
+        StartNextRound();
     }
-    void LoadRoom(RoomData roomData)
+    void FillAnomalyBag()
     {
-        if (activeRoomInstance != null) Destroy(activeRoomInstance);
-        
-        currentRoomData = roomData;
-        if (currentRoomData == null)
-        {
-            Debug.LogError("No Room Data assigned!");
-            return;
-        }
-        activeRoomInstance = Instantiate(currentRoomData.roomPrefab, transform);
-        playerTransform.position = startPoint.position;
-        
-        InitializeRoom(currentRoomData);
-    }
-    void InitializeRoom(RoomData roomData)
-    {
-        objectsInRoom = activeRoomInstance.GetComponentsInChildren<AnomalousObject>().ToList();
-        RandomizeAnomalies();
+        var shuffled = objectsInRoom.OrderBy(x => Random.value).ToList();
+        anomalyBag = new Queue<AnomalousObject>(shuffled);
+        Debug.Log($"Anomaly bag filled with {anomalyBag.Count} objects.");
     }
 
-    void RandomizeAnomalies()
+    void StartNextRound()
     {
         foreach (var obj in objectsInRoom) obj.SetAnomaly(false);
-        var randomObjects = objectsInRoom.OrderBy(x => Random.value).Take(currentRoomData.anomalyCount);
-        foreach (var obj in randomObjects) obj.SetAnomaly(true);
+
+        int anomaliesThisRound = currentRound == 0 ? 0 : Mathf.Min(
+            Random.value < 0.2f && currentRound != 1 ? 0 : Random.Range(1, maxAnomaliesPerRound + 1),
+            anomalyBag.Count
+        ); // Sorry this line is a mess, but it basically means: 20% chance for 0 anomalies (except for round 1), otherwise 1 to max anomalies, but never more than what's left in the bag
+        Debug.Log($"Starting round {currentRound} with {anomaliesThisRound} anomalies. Anomaly bag has {anomalyBag.Count} objects left.");
+
+        for (int i = 0; i < anomaliesThisRound; i++)
+        {
+            var obj = anomalyBag.Dequeue();
+            obj.SetAnomaly(true);
+        }
+        currentRound++;
+        ResetPlayer();
+    }
+
+    void InitializeRoom()
+    {
+        objectsInRoom = roomPrefab.GetComponentsInChildren<AnomalousObject>().ToList();
     }
 
     public void OnPlayerTryExit()
@@ -56,37 +57,25 @@ public class RoomController : MonoBehaviour
 
         if (anyAnomaliesLeft)
         {
-            Debug.Log("Failed! Anomaly still present. Resetting...");
-            RandomizeAnomalies();
-            ResetPlayer();
+            Debug.Log("Failed! Anomaly still present.");
+            FillAnomalyBag();
+            currentRound = 0; // Resets the gsame entirely, so first round will be anomaly free again
+            StartNextRound();
         }
         else
         {
-            Debug.Log("Success! Proceeding to next level.");
-            LoadNextFloor();
+            if (anomalyBag.Count <= 0)
+            {
+                Debug.Log("Game won!");
+                return;
+            }
+            Debug.Log("Success! Moving to next round.");
+            StartNextRound();
         }
     }
 
     void ResetPlayer()
     {
         playerTransform.position = startPoint.position;
-        // This will re-randomize anomalies in the room
-        InitializeRoom(currentRoomData); 
     }
-
-    void LoadNextFloor()
-    {
-        int currentIndex = allRooms.IndexOf(currentRoomData);
-        if (currentIndex < allRooms.Count - 1)
-        {
-            LoadRoom(allRooms[currentIndex + 1]);
-        }
-        else
-        {
-            Debug.Log("Game Won!");
-            // Trigger win screen here
-        }
-    }
-
-
 }
