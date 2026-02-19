@@ -1,47 +1,63 @@
 using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
-{
+{   
+    public Rigidbody2D targetRb;
     public Transform target;
-    public float smoothTime = 0f;
-    public Vector2 deadzoneSize = new Vector2(2f, 3f);
-    public Vector3 offset = new Vector3(0, 0, -10);
 
-    private Vector3 currentVelocity = Vector3.zero;
-    private Vector3 followPosition;
+    [Header("Balloon Settings")]
+    public float stiffness = 8f;     // How strong the pull toward player is
+    public float damping = 5f;       // How fast it settles (lower = floatier)
+    public Vector3 offset = new(0, 0, -10);
+
+    [Header("Look Ahead")]
+    public float lookAheadDistance = 2f;
+    public float lookAheadSmooth = 5f;
+    public float lookAheadFallingOffset = -1f;
+    public float maxDistanceY = 2.5f;
+
+    private Camera cam;
+
+    private Vector3 velocity;
+    private Vector3 currentLookAhead;
 
     void Start()
     {
-        if (target != null)
-        {
-            followPosition = target.position;
-        }
+        cam = Camera.main;
     }
 
     void LateUpdate()
     {
         if (target == null) return;
 
-        Vector3 targetPos = target.position;
+        Vector3 desiredPosition = target.position + offset;
 
-        if (targetPos.x > followPosition.x + deadzoneSize.x)
-            followPosition.x = targetPos.x - deadzoneSize.x;
-        else if (targetPos.x < followPosition.x - deadzoneSize.x)
-            followPosition.x = targetPos.x + deadzoneSize.x;
+        float moveDir = Mathf.Sign(targetRb.linearVelocity.x);
 
-        if (targetPos.y > followPosition.y + deadzoneSize.y)
-            followPosition.y = targetPos.y - deadzoneSize.y;
-        else if (targetPos.y < followPosition.y - deadzoneSize.y)
-            followPosition.y = targetPos.y + deadzoneSize.y;
+        Vector3 targetLookAhead = Vector3.zero;
 
-        Vector3 finalDestination = followPosition + offset;
-        transform.position = Vector3.SmoothDamp(transform.position, finalDestination, ref currentVelocity, smoothTime);
-    }
+        if (Mathf.Abs(targetRb.linearVelocity.x) > 0.1f)
+        {
+            targetLookAhead = lookAheadDistance * moveDir * Vector3.right;
+        }
 
-    void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Vector3 center = (followPosition == Vector3.zero && target != null) ? target.position : followPosition;
-        Gizmos.DrawWireCube(center, new Vector3(deadzoneSize.x * 2, deadzoneSize.y * 2, 0.1f));
+        currentLookAhead = Vector3.Lerp(currentLookAhead, targetLookAhead, lookAheadSmooth * Time.deltaTime);
+
+        desiredPosition += currentLookAhead;
+        if (targetRb.linearVelocity.y < -1f)
+            desiredPosition.y += lookAheadFallingOffset;
+
+        Vector3 force = (desiredPosition - transform.position) * stiffness;
+        force.y *= 1.8f;
+        velocity += force * Time.deltaTime;
+        velocity *= Mathf.Exp(-damping * Time.deltaTime);
+
+        transform.position += velocity * Time.deltaTime;
+
+        /* Clamp vertical position
+        float clampedY = Mathf.Clamp(transform.position.y, target.position.y - maxDistanceY, target.position.y + maxDistanceY);
+        transform.position = new Vector3(transform.position.x, clampedY, transform.position.z);
+        */
+
     }
 }
