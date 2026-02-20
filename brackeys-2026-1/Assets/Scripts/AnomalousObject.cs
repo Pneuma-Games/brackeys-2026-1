@@ -62,7 +62,6 @@ public class AnomalousObject : MonoBehaviour
 
     public void FixAnomaly()
     {
-        Debug.Log($"Attempting to fix {gameObject.name}...");
         if (anomalyActive)
         {
             Debug.Log($"{gameObject.name} fixed!");

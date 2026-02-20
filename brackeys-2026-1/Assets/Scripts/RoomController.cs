@@ -7,12 +7,15 @@ public class RoomController : MonoBehaviour
     public Transform playerTransform;
     public Transform startPoint;
     public GameObject roomPrefab;
+    public TMPro.TextMeshProUGUI roundCounterText;
+    
 
     private List<AnomalousObject> objectsInRoom = new();
     private Queue<AnomalousObject> anomalyBag = new();
 
     private int maxAnomaliesPerRound = 2;
-    private int currentRound = 0;
+    public int maxRounds = 10;
+    public int currentRound { get; private set; } = 0;
 
     void Start()
     {
@@ -29,7 +32,16 @@ public class RoomController : MonoBehaviour
 
     void StartNextRound()
     {
+
+        if (currentRound >= maxRounds)
+        {
+            Debug.Log("Max rounds reached. Game won!");
+            // TO DO: Trigger game win here
+            return;
+        }
+
         foreach (var obj in objectsInRoom) obj.SetNormal();
+        UpdateRoomCounter();
 
         int anomaliesThisRound = currentRound == 0 ? 0 : Mathf.Min(
             Random.value < 0.2f && currentRound != 1 ? 0 : Random.Range(1, maxAnomaliesPerRound + 1),
@@ -78,5 +90,10 @@ public class RoomController : MonoBehaviour
     void ResetPlayer()
     {
         playerTransform.position = startPoint.position;
+    }
+
+    public void UpdateRoomCounter()
+    {
+        roundCounterText.text = $"{currentRound + 1}";
     }
 }
