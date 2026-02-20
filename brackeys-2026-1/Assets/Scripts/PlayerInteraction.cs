@@ -20,7 +20,8 @@ public class PlayerInteraction : MonoBehaviour
 
         if (hit != null)
         {
-            if (hit.TryGetComponent<AnomalousObject>(out var anomaly))
+            var anomaly = hit.GetComponentInParent<AnomalousObject>();
+            if (anomaly != null)
             {
                 anomaly.FixAnomaly();
             }

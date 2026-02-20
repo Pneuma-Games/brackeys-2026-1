@@ -1,33 +1,79 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class AnomalousObject : MonoBehaviour
 {
-    [Header("Settings")]
-    public Color anomalyColor = Color.red;
-    public bool anomalyActive = false;
+    [Header("Prefabs")]
+    public GameObject normalPrefab;
+    public List<GameObject> anomalyPrefabs;
 
-    private Color originalColor;
-    private SpriteRenderer spriteRenderer;
+    private GameObject currentInstance;
+    public bool anomalyActive { get; private set; }
 
     public void Awake()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        originalColor = spriteRenderer.color;
+        SetNormal();
     }
 
-    public void SetAnomaly(bool active)
+    public int GetAnomalyVariantCount()
     {
-        anomalyActive = active;
-        spriteRenderer.color = active ? anomalyColor : originalColor;
+        return anomalyPrefabs.Count;
+    }
+
+    public void SetAnomaly(int variantIndex)
+    {
+        if (variantIndex < 0 || variantIndex >= anomalyPrefabs.Count)
+        {
+            Debug.LogError("Invalid anomaly index.");
+            return;
+        }
+
+        ClearCurrent();
+
+        currentInstance = Instantiate(
+            anomalyPrefabs[variantIndex],
+            transform.position,
+            transform.rotation,
+            transform
+        );
+
+        anomalyActive = true;
+    }
+
+    public void SetNormal()
+    {
+        ClearCurrent();
+
+        currentInstance = Instantiate(
+            normalPrefab,
+            transform.position,
+            transform.rotation,
+            transform
+        );
+
+        anomalyActive = false;
+    }
+
+    private void ClearCurrent()
+    {
+        if (currentInstance != null)
+            Destroy(currentInstance);
     }
 
     public void FixAnomaly()
     {
+        Debug.Log($"Attempting to fix {gameObject.name}...");
         if (anomalyActive)
         {
             Debug.Log($"{gameObject.name} fixed!");
-            SetAnomaly(false);
+            SetNormal();
             // VFX/SFX can be triggered here
         }
+    }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireCube(transform.position, Vector3.one * 0.5f);
     }
 }

@@ -29,7 +29,7 @@ public class RoomController : MonoBehaviour
 
     void StartNextRound()
     {
-        foreach (var obj in objectsInRoom) obj.SetAnomaly(false);
+        foreach (var obj in objectsInRoom) obj.SetNormal();
 
         int anomaliesThisRound = currentRound == 0 ? 0 : Mathf.Min(
             Random.value < 0.2f && currentRound != 1 ? 0 : Random.Range(1, maxAnomaliesPerRound + 1),
@@ -40,7 +40,8 @@ public class RoomController : MonoBehaviour
         for (int i = 0; i < anomaliesThisRound; i++)
         {
             var obj = anomalyBag.Dequeue();
-            obj.SetAnomaly(true);
+            int variantIndex = Random.Range(0, obj.GetAnomalyVariantCount()); // Random for now
+            obj.SetAnomaly(variantIndex);
         }
         currentRound++;
         ResetPlayer();
