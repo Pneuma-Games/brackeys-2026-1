@@ -30,6 +30,11 @@ public class PlayerInteraction : MonoBehaviour
             {
                 FindAnyObjectByType<RoomController>().OnPlayerTryExit();
             }
+
+            if (hit.CompareTag("Entrance"))
+            {
+                FindAnyObjectByType<RoomController>().OnPlayerAttemptEntranceExit();
+            }
         }
     }
 

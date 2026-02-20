@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 
 public class RoomController : MonoBehaviour
 {
@@ -8,6 +9,10 @@ public class RoomController : MonoBehaviour
     public Transform startPoint;
     public GameObject roomPrefab;
     public TMPro.TextMeshProUGUI roundCounterText;
+
+    [Header("Locations")]
+    public Transform roomEntrance;
+    public Transform hallwayEntrance;
     
 
     private List<AnomalousObject> objectsInRoom = new();
@@ -16,6 +21,9 @@ public class RoomController : MonoBehaviour
     private int maxAnomaliesPerRound = 2;
     public int maxRounds = 10;
     public int currentRound { get; private set; } = 0;
+
+    enum GameState { Room, Hallway, GameOver}
+    GameState currentGameState = GameState.Room;
 
     void Start()
     {
@@ -44,9 +52,9 @@ public class RoomController : MonoBehaviour
         UpdateRoomCounter();
 
         int anomaliesThisRound = currentRound == 0 ? 0 : Mathf.Min(
-            Random.value < 0.2f && currentRound != 1 ? 0 : Random.Range(1, maxAnomaliesPerRound + 1),
+            Random.value < 0.5f && currentRound != 1 ? 0 : Random.Range(1, maxAnomaliesPerRound + 1),
             anomalyBag.Count
-        ); // Sorry this line is a mess, but it basically means: 20% chance for 0 anomalies (except for round 1), otherwise 1 to max anomalies, but never more than what's left in the bag
+        ); // Sorry this line is a mess, but it basically means: 50% chance for 0 anomalies (except for round 1), otherwise 1 to max anomalies, but never more than what's left in the bag
         Debug.Log($"Starting round {currentRound} with {anomaliesThisRound} anomalies. Anomaly bag has {anomalyBag.Count} objects left.");
 
         for (int i = 0; i < anomaliesThisRound; i++)
@@ -67,29 +75,60 @@ public class RoomController : MonoBehaviour
     public void OnPlayerTryExit()
     {
         bool anyAnomaliesLeft = objectsInRoom.Any(obj => obj.anomalyActive);
+        
+        if (currentGameState == GameState.Room)
+        {
+            currentGameState = GameState.Hallway;
+            playerTransform.position = hallwayEntrance.position;
+        }
+        else if (currentGameState == GameState.Hallway)
+        {
+            currentGameState = GameState.Room;
+            playerTransform.position = roomEntrance.position;
+            OnPlayerEnterRoom();
+        }
+    }
 
+    public void OnPlayerEnterRoom()
+    {
+        // TO DO: Existential anomalies should reset here
+        bool anyAnomaliesLeft = objectsInRoom.Any(obj => obj.anomalyActive);
         if (anyAnomaliesLeft)
         {
             Debug.Log("Failed! Anomaly still present.");
-            FillAnomalyBag();
-            currentRound = 0; // Resets the gsame entirely, so first round will be anomaly free again
-            StartNextRound();
+            ResetGame();
         }
         else
         {
-            if (anomalyBag.Count <= 0)
-            {
-                Debug.Log("Game won!");
-                return;
-            }
             Debug.Log("Success! Moving to next round.");
             StartNextRound();
         }
     }
 
+    // This means trying to exit through the entrance
+    public void OnPlayerAttemptEntranceExit()
+    {
+        if (currentGameState == GameState.Hallway) return;
+
+        bool anyAnomaliesLeft = objectsInRoom.Any(obj => obj.anomalyActive);
+        if (!anyAnomaliesLeft)
+        {
+            Debug.Log("Failed! No anomalies present. Should have exited.");
+            ResetGame();
+        }
+        // TO DO: Existential anomalies don't reset here, but do on exit
+    }
+
     void ResetPlayer()
     {
         playerTransform.position = startPoint.position;
+    }
+
+    void ResetGame()
+    {
+        FillAnomalyBag();
+        currentRound = 0;
+        StartNextRound();
     }
 
     public void UpdateRoomCounter()
