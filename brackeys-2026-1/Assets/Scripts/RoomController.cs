@@ -27,6 +27,9 @@ public class RoomController : MonoBehaviour
     enum GameState { Room, Hallway, GameOver}
     GameState currentGameState = GameState.Room;
 
+    private bool existentialAnomalyPresent = false;
+    private bool usedEntranceAsExit = false;
+
     void Start()
     {
         InitializeRoom();
@@ -42,7 +45,8 @@ public class RoomController : MonoBehaviour
 
     void StartNextRound()
     {
-
+        existentialAnomalyPresent = false;
+        usedEntranceAsExit = false;
         if (currentRound >= maxRounds)
         {
             Debug.Log("Max rounds reached. Game won!");
@@ -81,10 +85,8 @@ public class RoomController : MonoBehaviour
         objectsInRoom = roomPrefab.GetComponentsInChildren<AnomalousObject>().ToList();
     }
 
-    public void OnPlayerTryExit()
-    {
-        bool anyAnomaliesLeft = objectsInRoom.Any(obj => obj.anomalyActive);
-        
+    public void OnPlayerTryExit() // This is just for hallway stuff
+    {   
         if (currentGameState == GameState.Room)
         {
             currentGameState = GameState.Hallway;
@@ -100,14 +102,35 @@ public class RoomController : MonoBehaviour
 
     public void OnPlayerEnterRoom()
     {
-
         bool anyAnomaliesLeft = objectsInRoom.Any(obj => obj.anomalyActive);
-        if (anyAnomaliesLeft)
+        ExistentialAnomaly[] existentialAnomalies = FindObjectsByType<ExistentialAnomaly>(FindObjectsSortMode.None);
+        if (existentialAnomalyPresent && usedEntranceAsExit)
+        {
+            Debug.Log("Correctly used entrance in the presence of existential anomaly(s).");
+            foreach (var ea in existentialAnomalies) ea.RevertAll();
+            StartNextRound();
+            return;
+        }
+        else if (existentialAnomalyPresent && !usedEntranceAsExit)
+        {
+            Debug.Log("Failed! Used exit in the presence of existential anomaly(s).");
+            ResetGame(); // Should hopefully destroy anomalies
+            return;
+        }
+        // At this point we confirm no existential anomalies are active
+        if (anyAnomaliesLeft) // Doesn't matter which exit method is used, fail either way
         {
             Debug.Log("Failed! Anomaly still present.");
             ResetGame();
+            return;
         }
-        else
+        else if (!anyAnomaliesLeft && usedEntranceAsExit)
+        {
+            Debug.Log("Failed! Used entrance even though no anomalies exist.");
+            ResetGame();
+            return;
+        }
+        else // no anomalies left and didn't use entrance as exit, success!
         {
             Debug.Log("Success! Moving to next round.");
             StartNextRound();
@@ -117,18 +140,20 @@ public class RoomController : MonoBehaviour
     // This means trying to exit through the entrance
     public void OnPlayerAttemptEntranceExit()
     {
-        Debug.Log($"Player attempted to exit through the entrance! Game state: {currentGameState}");
+        //Debug.Log($"Player attempted to exit through the entrance! Game state: {currentGameState}");
         if (currentGameState == GameState.Hallway) return;
+
+        usedEntranceAsExit = true;
 
         bool anyAnomaliesLeft = objectsInRoom.Any(obj => obj.anomalyActive);
         ExistentialAnomaly existentialAnomaly = FindAnyObjectByType<ExistentialAnomaly>();
-        if (existentialAnomaly && existentialAnomaly.effectsActive) // If existentail anomaly present, leave to ExistentialAnomaly.OnPlayerUsedEntrance/Exit
+        if (existentialAnomaly && existentialAnomaly.effectsActive)
         {
+            existentialAnomalyPresent = true;
+            OnPlayerTryExit();
             return;
         }
-        Debug.Log("Failed! No existential anomaly present. Should have exited.");
-        ResetGame();
-        // Existential anomalies handle their own reset via ExistentialAnomaly.OnPlayerUsedEntrance/Exit
+        OnPlayerTryExit(); // All logic moved to this function
     }
 
     void ResetPlayer()
@@ -138,6 +163,8 @@ public class RoomController : MonoBehaviour
 
     void ResetGame()
     {
+        existentialAnomalyPresent = false;
+        usedEntranceAsExit = false;
         FillAnomalyBag();
         currentRound = 0;
         StartNextRound();
