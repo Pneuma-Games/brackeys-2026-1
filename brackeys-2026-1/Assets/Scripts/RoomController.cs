@@ -18,9 +18,13 @@ public class RoomController : MonoBehaviour
 
     [Header("Settings")]
 
-    [Range(0f, 1f)]
-    [Tooltip("Chance that existential anomaly is chosen (0-1)")]
+    [Range(0f, 0.5f)]
+    [Tooltip("Chance that existential anomaly is chosen (0-0.5)")]
     public float existentialAnomalyChance = 0.3f;
+
+    [Range(0f, 0.5f)]
+    [Tooltip("Chance that reactive anomaly is chosen (0-0.5)")]
+    public float reactiveAnomalyChance = 0.3f;
 
     [Range(0f, 1f)]
     [Tooltip("Chance that no anomalies spawn this round (0-1)")]
@@ -90,9 +94,13 @@ public class RoomController : MonoBehaviour
             {
                 variantIndex = 0;
             }
+            else if (roll < existentialAnomalyChance + reactiveAnomalyChance)
+            {
+                variantIndex = 1; // 1 is reactive by convetion
+            }
             else
             {
-                variantIndex = Random.Range(1, count);
+                variantIndex = Random.Range(2, count); // These will be procedural ones
             }
 
             obj.SetAnomaly(variantIndex);
