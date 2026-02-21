@@ -10,6 +10,10 @@ public class AnomalousObject : MonoBehaviour
     private GameObject currentInstance;
     public bool anomalyActive { get; private set; }
 
+    public bool forceExistentialAnomaly = false; // For testing purposes, forces this object to be an existential anomaly when selected
+    // for reference, existential anomaly prefabs are at index 0
+    // Room controller loops through all objects and sets this to true if it has a checkbox checked
+
     public void Awake()
     {
         SetNormal();
@@ -39,7 +43,7 @@ public class AnomalousObject : MonoBehaviour
 
         // Determine which prefab and what modifications to apply
         GameObject prefabToSpawn;
-        bool isProcedural = variantIndex >= originalCount;
+        bool isProcedural = forceExistentialAnomaly ? false : variantIndex >= originalCount;
         int proceduralType = -1;
 
         if (isProcedural)
@@ -49,7 +53,7 @@ public class AnomalousObject : MonoBehaviour
         }
         else
         {
-            prefabToSpawn = anomalyPrefabs[variantIndex];
+            prefabToSpawn = forceExistentialAnomaly ? anomalyPrefabs[0] : anomalyPrefabs[variantIndex];
         }
 
         currentInstance = Instantiate(

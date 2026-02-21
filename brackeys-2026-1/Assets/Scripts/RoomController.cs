@@ -12,6 +12,9 @@ public class RoomController : MonoBehaviour
     [Header("Locations")]
     public Transform roomEntrance;
     public Transform hallwayEntrance;
+
+    [Header("Debug")]
+    public bool forceExistentialAnomalyInNextRound = false; // For testing purposes, forces the next anomaly to be an existential anomaly when selected
     
 
     private List<AnomalousObject> objectsInRoom = new();
@@ -59,6 +62,11 @@ public class RoomController : MonoBehaviour
         for (int i = 0; i < anomaliesThisRound; i++)
         {
             var obj = anomalyBag.Dequeue();
+            if (forceExistentialAnomalyInNextRound)
+            {
+                obj.forceExistentialAnomaly = true;
+                forceExistentialAnomalyInNextRound = false; // Reset the flag
+            }
             int variantIndex = Random.Range(0, obj.GetAnomalyVariantCount()); // Random for now
             obj.SetAnomaly(variantIndex);
         }
