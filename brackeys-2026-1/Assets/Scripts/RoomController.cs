@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 
 public class RoomController : MonoBehaviour
 {
@@ -63,6 +62,8 @@ public class RoomController : MonoBehaviour
             int variantIndex = Random.Range(0, obj.GetAnomalyVariantCount()); // Random for now
             obj.SetAnomaly(variantIndex);
         }
+
+
         currentRound++;
         ResetPlayer();
     }
@@ -91,7 +92,7 @@ public class RoomController : MonoBehaviour
 
     public void OnPlayerEnterRoom()
     {
-        // TO DO: Existential anomalies should reset here
+
         bool anyAnomaliesLeft = objectsInRoom.Any(obj => obj.anomalyActive);
         if (anyAnomaliesLeft)
         {
@@ -116,7 +117,7 @@ public class RoomController : MonoBehaviour
             Debug.Log("Failed! No anomalies present. Should have exited.");
             ResetGame();
         }
-        // TO DO: Existential anomalies don't reset here, but do on exit
+        // Existential anomalies handle their own reset via ExistentialAnomaly.OnPlayerUsedEntrance/Exit
     }
 
     void ResetPlayer()
