@@ -126,7 +126,7 @@ public class ExistentialAnomaly : MonoBehaviour
     private Dictionary<AnomalousObject, Vector3> peerOriginalPositions = new Dictionary<AnomalousObject, Vector3>();
 
     private float originalTimeScale = 1f;
-    private bool effectsActive = false;
+    public bool effectsActive {get; private set;} = false;
 
     private UnityEngine.Rendering.Universal.Vignette vignetteEffect;
     private UnityEngine.Rendering.Universal.ChromaticAberration chromaticEffect;

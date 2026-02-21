@@ -140,5 +140,10 @@ public class AnomalousObject : MonoBehaviour
     {
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireCube(transform.position, Vector3.one * 0.5f);
+        if (anomalyActive)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, 0.7f);
+        }
     }
 }

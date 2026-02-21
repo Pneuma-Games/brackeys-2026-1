@@ -109,14 +109,17 @@ public class RoomController : MonoBehaviour
     // This means trying to exit through the entrance
     public void OnPlayerAttemptEntranceExit()
     {
+        Debug.Log($"Player attempted to exit through the entrance! Game state: {currentGameState}");
         if (currentGameState == GameState.Hallway) return;
 
         bool anyAnomaliesLeft = objectsInRoom.Any(obj => obj.anomalyActive);
-        if (!anyAnomaliesLeft)
+        ExistentialAnomaly existentialAnomaly = FindAnyObjectByType<ExistentialAnomaly>();
+        if (existentialAnomaly && existentialAnomaly.effectsActive) // If existentail anomaly present, leave to ExistentialAnomaly.OnPlayerUsedEntrance/Exit
         {
-            Debug.Log("Failed! No anomalies present. Should have exited.");
-            ResetGame();
+            return;
         }
+        Debug.Log("Failed! No existential anomaly present. Should have exited.");
+        ResetGame();
         // Existential anomalies handle their own reset via ExistentialAnomaly.OnPlayerUsedEntrance/Exit
     }
 
