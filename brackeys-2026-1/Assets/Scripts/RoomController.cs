@@ -15,6 +15,16 @@ public class RoomController : MonoBehaviour
 
     [Header("Debug")]
     public bool forceExistentialAnomalyInNextRound = false; // For testing purposes, forces the next anomaly to be an existential anomaly when selected
+
+    [Header("Settings")]
+
+    [Range(0f, 1f)]
+    [Tooltip("Chance that existential anomaly is chosen (0-1)")]
+    public float existentialAnomalyChance = 0.3f;
+
+    [Range(0f, 1f)]
+    [Tooltip("Chance that no anomalies spawn this round (0-1)")]
+    public float chanceForNoAnomalies = 0.5f;
     
 
     private List<AnomalousObject> objectsInRoom = new();
@@ -58,9 +68,9 @@ public class RoomController : MonoBehaviour
         UpdateRoomCounter();
 
         int anomaliesThisRound = currentRound == 0 ? 0 : Mathf.Min(
-            Random.value < 0.5f && currentRound != 1 ? 0 : Random.Range(1, maxAnomaliesPerRound + 1),
+            Random.value < chanceForNoAnomalies && currentRound != 1 ? 0 : Random.Range(1, maxAnomaliesPerRound + 1),
             anomalyBag.Count
-        ); // Sorry this line is a mess, but it basically means: 50% chance for 0 anomalies (except for round 1), otherwise 1 to max anomalies, but never more than what's left in the bag
+        ); // Sorry this line is a mess, but it basically means: chanceForNoAnomalies chance for 0 anomalies (except for round 1), otherwise 1 to max anomalies, but never more than what's left in the bag
         Debug.Log($"Starting round {currentRound} with {anomaliesThisRound} anomalies. Anomaly bag has {anomalyBag.Count} objects left.");
 
         for (int i = 0; i < anomaliesThisRound; i++)
@@ -71,7 +81,20 @@ public class RoomController : MonoBehaviour
                 obj.forceExistentialAnomaly = true;
                 forceExistentialAnomalyInNextRound = false; // Reset the flag
             }
-            int variantIndex = Random.Range(0, obj.GetAnomalyVariantCount()); // Random for now
+
+            int count = obj.GetAnomalyVariantCount();
+            float roll = Random.value; // 0.0 to 1.0
+            int variantIndex;
+
+            if (roll < existentialAnomalyChance)
+            {
+                variantIndex = 0;
+            }
+            else
+            {
+                variantIndex = Random.Range(1, count);
+            }
+
             obj.SetAnomaly(variantIndex);
         }
 
@@ -114,7 +137,8 @@ public class RoomController : MonoBehaviour
         else if (existentialAnomalyPresent && !usedEntranceAsExit)
         {
             Debug.Log("Failed! Used exit in the presence of existential anomaly(s).");
-            ResetGame(); // Should hopefully destroy anomalies
+            foreach (var ea in existentialAnomalies) ea.RevertAll();
+            ResetGame();
             return;
         }
         // At this point we confirm no existential anomalies are active

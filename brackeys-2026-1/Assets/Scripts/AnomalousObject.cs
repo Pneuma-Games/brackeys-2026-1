@@ -76,10 +76,10 @@ public class AnomalousObject : MonoBehaviour
         switch (type)
         {
             case 0: // Slightly smaller
-                instance.transform.localScale *= 0.8f;
+                instance.transform.localScale *= 0.6f;
                 break;
             case 1: // Slightly larger
-                instance.transform.localScale *= 1.2f;
+                instance.transform.localScale *= 1.5f;
                 break;
             case 2: // Color shifted
                 Renderer[] renderers = instance.GetComponentsInChildren<Renderer>();
