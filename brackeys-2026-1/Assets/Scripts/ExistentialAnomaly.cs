@@ -282,6 +282,7 @@ public class ExistentialAnomaly : MonoBehaviour
         foreach (var effect in activeEffects)
             RunEffect(effect);
 
+        AudioManager.Instance.StartEvent3D("env_Anomaly", transform.position);
         Debug.Log($"[ExistentialAnomaly] Activated with effects: {string.Join(", ", activeEffects)}");
     }
 
@@ -312,6 +313,7 @@ public class ExistentialAnomaly : MonoBehaviour
         if (chromaticEffect  != null) chromaticEffect.intensity.value   = originalChromaticIntensity;
         if (colorAdjustments != null) colorAdjustments.saturation.value = originalSaturation;
 
+        AudioManager.Instance.StopEvent("env_Anomaly");
         Debug.Log("[ExistentialAnomaly] All effects reverted.");
     }
 
@@ -515,9 +517,8 @@ public class ExistentialAnomaly : MonoBehaviour
 
     private void TriggerMusicVariant()
     {
-        if (musicVariantKeys.Length == 0) return;
-        string key = musicVariantKeys[Random.Range(0, musicVariantKeys.Length)];
-        Debug.Log($"[ExistentialAnomaly] Effect: Music variant → {key}");
+        Debug.Log("[ExistentialAnomaly] Effect: Music variant triggered.");
+        AudioManager.Instance.TriggerRoomMusicEvent();
     }
 
     private void ApplyReverseControls()

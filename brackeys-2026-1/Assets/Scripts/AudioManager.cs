@@ -1,5 +1,6 @@
 using FMOD.Studio;
 using FMODUnity;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -118,21 +119,33 @@ public class AudioManager : MonoBehaviour {
 
     private EventInstance roomMusicInstance;
     private bool musicInitialized;
+    private bool pendingMusicStart;
     private readonly string musicKey = "music_Room";
 
     public void StartRoomMusic() {
-
         if (musicInitialized) { return; }
+        if (pendingMusicStart) { return; }
+        pendingMusicStart = true;
+        StartCoroutine(WaitForBanksThenStartMusic());
+    }
+
+    private IEnumerator WaitForBanksThenStartMusic() {
+        while (!RuntimeManager.HaveAllBanksLoaded) {
+            yield return null;
+        }
+        RuntimeManager.StudioSystem.flushCommands();
 
         if (!eventMap.TryGetValue(musicKey, out var eventRef)) {
-            Debug.LogWarning("Music event not found");
-            return;
+            Debug.LogWarning($"[AudioManager] Music key '{musicKey}' not found. Available keys: {string.Join(", ", eventMap.Keys)}");
+            pendingMusicStart = false;
+            yield break;
         }
 
         roomMusicInstance = RuntimeManager.CreateInstance(eventRef);
         roomMusicInstance.start();
-
         musicInitialized = true;
+        pendingMusicStart = false;
+        Debug.Log("[AudioManager] Room music started.");
     }
 
     public void PauseRoomMusic() {
