@@ -11,6 +11,7 @@ public class RoomController : MonoBehaviour
     public GameObject roomPrefab;
     public TMPro.TextMeshProUGUI roundCounterText;
     public ScreenFader screenFader;
+    public PlayerInteraction playerInteraction;
 
     [Header("Locations")]
     public Transform roomEntrance;
@@ -66,6 +67,9 @@ public class RoomController : MonoBehaviour
     {
         existentialAnomalyPresent = false;
         usedEntranceAsExit = false;
+        
+        playerInteraction.ResetStrikes();
+        
         if (currentRound >= maxRounds)
         {
             Debug.Log("Max rounds reached. Game won!");
@@ -224,6 +228,20 @@ public class RoomController : MonoBehaviour
         currentRound = 0;
         AudioManager.Instance.ResetRoomMusicState();
         StartNextRound();
+    }
+
+    public void FailOnThreeStrikes()
+    {
+        StartCoroutine(FailOnThreeStrikesCoroutine());
+    }
+
+    private IEnumerator FailOnThreeStrikesCoroutine()
+    {
+        yield return screenFader.FadeOut();
+        yield return _waitForSeconds0_5;
+        ResetGame();
+        ResetPlayer();
+        yield return screenFader.FadeIn();
     }
 
     public void UpdateRoomCounter()
