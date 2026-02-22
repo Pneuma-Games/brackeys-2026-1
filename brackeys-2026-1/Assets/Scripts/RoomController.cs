@@ -1,13 +1,16 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using System.Collections;
 
 public class RoomController : MonoBehaviour
 {
+    private static WaitForSeconds _waitForSeconds0_5 = new WaitForSeconds(0.5f);
     public Transform playerTransform;
     public Transform startPoint;
     public GameObject roomPrefab;
     public TMPro.TextMeshProUGUI roundCounterText;
+    public ScreenFader screenFader;
 
     [Header("Locations")]
     public Transform roomEntrance;
@@ -118,17 +121,29 @@ public class RoomController : MonoBehaviour
 
     public void OnPlayerTryExit() // This is just for hallway stuff
     {   
+        StartCoroutine(HandleDoorTransition());
+    }
+
+    private IEnumerator HandleDoorTransition()
+    {
+        yield return screenFader.FadeOut();
+        yield return _waitForSeconds0_5;
+
         if (currentGameState == GameState.Room)
         {
             currentGameState = GameState.Hallway;
             playerTransform.position = hallwayEntrance.position;
+            Camera.main.transform.position = playerTransform.position;
         }
         else if (currentGameState == GameState.Hallway)
         {
             currentGameState = GameState.Room;
             playerTransform.position = roomEntrance.position;
+            Camera.main.transform.position = playerTransform.position;
             OnPlayerEnterRoom();
         }
+        yield return _waitForSeconds0_5;
+        yield return screenFader.FadeIn();
     }
 
     public void OnPlayerEnterRoom()
