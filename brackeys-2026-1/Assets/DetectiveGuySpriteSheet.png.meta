@@ -1,0 +1,351 @@
+fileFormatVersion: 2
+guid: 3c3159e1e9194ad4ea555dc785c1b2f9
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 8809870835965377090
+    second: DetectiveGuySpriteSheet_0
+  - first:
+      213: -1792318615339298008
+    second: DetectiveGuySpriteSheet_1
+  - first:
+      213: -3550663960665982231
+    second: DetectiveGuySpriteSheet_2
+  - first:
+      213: 2350481533584823224
+    second: DetectiveGuySpriteSheet_3
+  - first:
+      213: -8411422119049484411
+    second: DetectiveGuySpriteSheet_4
+  - first:
+      213: -2690799941805935143
+    second: DetectiveGuySpriteSheet_5
+  - first:
+      213: -8970502038222329377
+    second: DetectiveGuySpriteSheet_6
+  - first:
+      213: 4245989383996327415
+    second: DetectiveGuySpriteSheet_7
+  - first:
+      213: 1305328361030727807
+    second: DetectiveGuySpriteSheet_8
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: DetectiveGuySpriteSheet_0
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 405
+        width: 54
+        height: 188
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 3, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 24a3ace39d2f24a70800000000000000
+      internalID: 8809870835965377090
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DetectiveGuySpriteSheet_1
+      rect:
+        serializedVersion: 2
+        x: 246
+        y: 410
+        width: 113
+        height: 184
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 823916827b76027e0800000000000000
+      internalID: -1792318615339298008
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DetectiveGuySpriteSheet_2
+      rect:
+        serializedVersion: 2
+        x: 468
+        y: 407
+        width: 64
+        height: 192
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9eaf8b3a0f189bec0800000000000000
+      internalID: -3550663960665982231
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DetectiveGuySpriteSheet_3
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 207
+        width: 72
+        height: 187
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8b3507c50869e9020800000000000000
+      internalID: 2350481533584823224
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DetectiveGuySpriteSheet_4
+      rect:
+        serializedVersion: 2
+        x: 246
+        y: 208
+        width: 112
+        height: 187
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 587213af520a44b80800000000000000
+      internalID: -8411422119049484411
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DetectiveGuySpriteSheet_5
+      rect:
+        serializedVersion: 2
+        x: 473
+        y: 206
+        width: 66
+        height: 190
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9d5f30b95bb58aad0800000000000000
+      internalID: -2690799941805935143
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DetectiveGuySpriteSheet_6
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 7
+        width: 69
+        height: 189
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fd927da8cef528380800000000000000
+      internalID: -8970502038222329377
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DetectiveGuySpriteSheet_7
+      rect:
+        serializedVersion: 2
+        x: 266
+        y: 7
+        width: 88
+        height: 153
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f54e2939d8ccea30800000000000000
+      internalID: 4245989383996327415
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DetectiveGuySpriteSheet_8
+      rect:
+        serializedVersion: 2
+        x: 470
+        y: 10
+        width: 57
+        height: 174
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f78ba7a7a357d1210800000000000000
+      internalID: 1305328361030727807
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 1e3624192c8415e4e969ac2cbcc2aa6f
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      DetectiveGuySpriteSheet_0: 8809870835965377090
+      DetectiveGuySpriteSheet_1: -1792318615339298008
+      DetectiveGuySpriteSheet_2: -3550663960665982231
+      DetectiveGuySpriteSheet_3: 2350481533584823224
+      DetectiveGuySpriteSheet_4: -8411422119049484411
+      DetectiveGuySpriteSheet_5: -2690799941805935143
+      DetectiveGuySpriteSheet_6: -8970502038222329377
+      DetectiveGuySpriteSheet_7: 4245989383996327415
+      DetectiveGuySpriteSheet_8: 1305328361030727807
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
