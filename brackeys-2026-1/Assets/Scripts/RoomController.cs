@@ -51,6 +51,9 @@ public class RoomController : MonoBehaviour
     {
         InitializeRoom();
         FillAnomalyBag();
+        AudioManager.Instance.StartEvent2D("amb_Hallway");
+        AudioManager.Instance.StartEvent2D("amb_WoodCreak");
+        AudioManager.Instance.StartRoomMusic();
         StartNextRound();
     }
     void FillAnomalyBag()
@@ -134,12 +137,14 @@ public class RoomController : MonoBehaviour
             currentGameState = GameState.Hallway;
             playerTransform.position = hallwayEntrance.position;
             Camera.main.transform.position = playerTransform.position;
+            AudioManager.Instance.PlayEvent2D("int_Door_Room");
         }
         else if (currentGameState == GameState.Hallway)
         {
             currentGameState = GameState.Room;
             playerTransform.position = roomEntrance.position;
             Camera.main.transform.position = playerTransform.position;
+            AudioManager.Instance.PlayEvent2D("int_Door_Hallway");
             OnPlayerEnterRoom();
         }
         yield return _waitForSeconds0_5;
@@ -154,6 +159,7 @@ public class RoomController : MonoBehaviour
         {
             Debug.Log("Correctly used entrance in the presence of existential anomaly(s).");
             foreach (var ea in existentialAnomalies) ea.RevertAll();
+            AudioManager.Instance.TriggerRoomMusicEvent();
             StartNextRound();
             return;
         }
@@ -161,25 +167,28 @@ public class RoomController : MonoBehaviour
         {
             Debug.Log("Failed! Used exit in the presence of existential anomaly(s).");
             foreach (var ea in existentialAnomalies) ea.RevertAll();
+            AudioManager.Instance.PlayEvent2D("env_fail");
             ResetGame();
             return;
         }
-        // At this point we confirm no existential anomalies are active
-        if (anyAnomaliesLeft) // Doesn't matter which exit method is used, fail either way
+        if (anyAnomaliesLeft)
         {
             Debug.Log("Failed! Anomaly still present.");
+            AudioManager.Instance.PlayEvent2D("env_fail");
             ResetGame();
             return;
         }
         else if (!anyAnomaliesLeft && usedEntranceAsExit)
         {
             Debug.Log("Failed! Used entrance even though no anomalies exist.");
+            AudioManager.Instance.PlayEvent2D("env_fail");
             ResetGame();
             return;
         }
-        else // no anomalies left and didn't use entrance as exit, success!
+        else
         {
             Debug.Log("Success! Moving to next round.");
+            AudioManager.Instance.TriggerRoomMusicEvent();
             StartNextRound();
         }
     }
@@ -214,6 +223,7 @@ public class RoomController : MonoBehaviour
         usedEntranceAsExit = false;
         FillAnomalyBag();
         currentRound = 0;
+        AudioManager.Instance.ResetRoomMusicState();
         StartNextRound();
     }
 

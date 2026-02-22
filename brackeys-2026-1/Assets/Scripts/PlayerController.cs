@@ -30,6 +30,10 @@ public class PlayerController : MonoBehaviour
 
     private bool controlsReversed = false;
     private bool jumpInverted = false;
+    private bool wasGrounded = false;
+    private float footstepTimer = 0f;
+    private float footstepInterval = 0.35f;
+    private bool nextFootIsLeft = true;
 
     void Awake()
     {
@@ -62,7 +66,13 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, checkRadius, groundLayer);
+        bool groundedThisFrame = Physics2D.OverlapCircle(groundCheck.position, checkRadius, groundLayer);
+
+        if (!wasGrounded && groundedThisFrame)
+            AudioManager.Instance.PlayEvent2D("player_Landing");
+
+        isGrounded = groundedThisFrame;
+        wasGrounded = groundedThisFrame;
 
         if (isGrounded)
             coyoteCounter = coyoteTime;
@@ -94,6 +104,7 @@ public class PlayerController : MonoBehaviour
         float force = jumpInverted ? -jumpForce : jumpForce;
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, force);
         jumpBufferCounter = 0;
+        AudioManager.Instance.PlayEvent2D("player_Jump");
     }
 
     public void SetControlsReversed(bool reversed) => controlsReversed = reversed;
@@ -103,6 +114,21 @@ public class PlayerController : MonoBehaviour
     {
         rb.linearVelocity = new Vector2(moveInput.x * moveSpeed, rb.linearVelocity.y);
         ApplyJumpGravity();
+
+        if (isGrounded && Mathf.Abs(moveInput.x) > 0.1f)
+        {
+            footstepTimer -= Time.fixedDeltaTime;
+            if (footstepTimer <= 0f)
+            {
+                AudioManager.Instance.PlayEvent2D(nextFootIsLeft ? "player_LeftFootstep" : "player_RightFootstep");
+                nextFootIsLeft = !nextFootIsLeft;
+                footstepTimer = footstepInterval;
+            }
+        }
+        else
+        {
+            footstepTimer = 0f;
+        }
     }
 
     private void ApplyJumpGravity()
