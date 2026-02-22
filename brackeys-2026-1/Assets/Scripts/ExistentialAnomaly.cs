@@ -126,7 +126,7 @@ public class ExistentialAnomaly : MonoBehaviour
     private Dictionary<AnomalousObject, Vector3> peerOriginalPositions = new Dictionary<AnomalousObject, Vector3>();
 
     private float originalTimeScale = 1f;
-    private bool effectsActive = false;
+    public bool effectsActive {get; private set;} = false;
 
     private UnityEngine.Rendering.Universal.Vignette vignetteEffect;
     private UnityEngine.Rendering.Universal.ChromaticAberration chromaticEffect;
@@ -175,7 +175,7 @@ public class ExistentialAnomaly : MonoBehaviour
             if (colorAdjustments != null) originalSaturation         = colorAdjustments.saturation.value;
         }
 
-        StartCoroutine(WatchTriggers());
+        //StartCoroutine(WatchTriggers());
 
         var overlayGo = GameObject.FindWithTag("BlinkOverlay");
         if (overlayGo != null)
@@ -232,6 +232,7 @@ public class ExistentialAnomaly : MonoBehaviour
             CachePlayer(go);
     }
 
+    /*
     private IEnumerator WatchTriggers()
     {
         while (true)
@@ -258,6 +259,7 @@ public class ExistentialAnomaly : MonoBehaviour
             yield return null;
         }
     }
+    */
 
     private void CachePlayer(GameObject playerGo)
     {
@@ -311,26 +313,6 @@ public class ExistentialAnomaly : MonoBehaviour
         if (colorAdjustments != null) colorAdjustments.saturation.value = originalSaturation;
 
         Debug.Log("[ExistentialAnomaly] All effects reverted.");
-    }
-
-    private void OnPlayerUsedEntrance()
-    {
-        Debug.Log("[ExistentialAnomaly] Player exited through entrance.");
-        RevertAll();
-        roomController?.OnPlayerTryExit();
-    }
-
-    private void OnPlayerUsedExit()
-    {
-        Debug.Log("[ExistentialAnomaly] Player used exit – resetting anomaly.");
-        RevertAll();
-        StartCoroutine(DelayedActivate(0.1f));
-    }
-
-    private IEnumerator DelayedActivate(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        Activate();
     }
 
     private void PickRandomEffects()
