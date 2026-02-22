@@ -16,4 +16,9 @@ public class StartButtonController : MonoBehaviour
     {
         Application.Quit();
     }
+
+    public void LoadTutorialScene()
+    {
+        SceneManager.LoadScene("Tutorial");
+    }
 }
