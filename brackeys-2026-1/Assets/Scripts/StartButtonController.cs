@@ -11,4 +11,10 @@ public class StartButtonController : MonoBehaviour
         AudioManager.Instance.StartRoomMusic();
         SceneManager.LoadScene(sceneName);
     }
+
+    public void QuitClick()
+    {
+        AudioManager.Instance.PlayEvent2D("ui_QuitGame");
+        Application.Quit();
+    }
 }

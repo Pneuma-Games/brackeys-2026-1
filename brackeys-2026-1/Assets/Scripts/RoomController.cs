@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class RoomController : MonoBehaviour
 {
@@ -53,7 +54,7 @@ public class RoomController : MonoBehaviour
         InitializeRoom();
         FillAnomalyBag();
         AudioManager.Instance.StartEvent2D("amb_Hallway");
-        AudioManager.Instance.StartEvent2D("amb_WoodCreak");
+        AudioManager.Instance.StartEvent3D("amb_WoodCreak", playerTransform.position);
         StartNextRound();
     }
     void FillAnomalyBag()
@@ -73,7 +74,7 @@ public class RoomController : MonoBehaviour
         if (currentRound >= maxRounds)
         {
             Debug.Log("Max rounds reached. Game won!");
-            // TO DO: Trigger game win here
+            SceneManager.LoadScene("WinScreen");
             return;
         }
 
