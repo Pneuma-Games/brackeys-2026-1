@@ -53,7 +53,6 @@ public class RoomController : MonoBehaviour
         FillAnomalyBag();
         AudioManager.Instance.StartEvent2D("amb_Hallway");
         AudioManager.Instance.StartEvent2D("amb_WoodCreak");
-        AudioManager.Instance.StartRoomMusic();
         StartNextRound();
     }
     void FillAnomalyBag()
