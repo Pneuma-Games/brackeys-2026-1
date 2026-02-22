@@ -11,4 +11,14 @@ public class StartButtonController : MonoBehaviour
         AudioManager.Instance.StartRoomMusic();
         SceneManager.LoadScene(sceneName);
     }
+
+    public void QuitClick()
+    {
+        Application.Quit();
+    }
+
+    public void LoadTutorialScene()
+    {
+        SceneManager.LoadScene("Tutorial");
+    }
 }

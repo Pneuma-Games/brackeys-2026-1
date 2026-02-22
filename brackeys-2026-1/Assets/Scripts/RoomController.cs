@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class RoomController : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class RoomController : MonoBehaviour
     public GameObject roomPrefab;
     public TMPro.TextMeshProUGUI roundCounterText;
     public ScreenFader screenFader;
+    public PlayerInteraction playerInteraction;
 
     [Header("Locations")]
     public Transform roomEntrance;
@@ -52,7 +54,7 @@ public class RoomController : MonoBehaviour
         InitializeRoom();
         FillAnomalyBag();
         AudioManager.Instance.StartEvent2D("amb_Hallway");
-        AudioManager.Instance.StartEvent2D("amb_WoodCreak");
+        AudioManager.Instance.StartEvent3D("amb_WoodCreak", playerTransform.position);
         StartNextRound();
     }
     void FillAnomalyBag()
@@ -66,10 +68,13 @@ public class RoomController : MonoBehaviour
     {
         existentialAnomalyPresent = false;
         usedEntranceAsExit = false;
+        
+        playerInteraction.ResetStrikes();
+        
         if (currentRound >= maxRounds)
         {
             Debug.Log("Max rounds reached. Game won!");
-            // TO DO: Trigger game win here
+            SceneManager.LoadScene("WinScreen");
             return;
         }
 
@@ -224,6 +229,20 @@ public class RoomController : MonoBehaviour
         currentRound = 0;
         AudioManager.Instance.ResetRoomMusicState();
         StartNextRound();
+    }
+
+    public void FailOnThreeStrikes()
+    {
+        StartCoroutine(FailOnThreeStrikesCoroutine());
+    }
+
+    private IEnumerator FailOnThreeStrikesCoroutine()
+    {
+        yield return screenFader.FadeOut();
+        yield return _waitForSeconds0_5;
+        ResetGame();
+        ResetPlayer();
+        yield return screenFader.FadeIn();
     }
 
     public void UpdateRoomCounter()
