@@ -8,7 +8,7 @@ public class StartButtonController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public void StartClick()
     {
-        FMODUnity.RuntimeManager.StudioSystem.flushCommands();
+        //FMODUnity.RuntimeManager.StudioSystem.flushCommands();
         AudioManager.Instance.PlayEvent2D("ui_StartGame");
         SceneManager.LoadScene(sceneName);
     }
