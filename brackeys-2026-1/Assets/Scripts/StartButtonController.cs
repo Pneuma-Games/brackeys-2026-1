@@ -9,6 +9,7 @@ public class StartButtonController : MonoBehaviour
     public void StartClick()
     {
         FMODUnity.RuntimeManager.StudioSystem.flushCommands();
+        AudioManager.Instance.PlayEvent2D("ui_StartGame");
         SceneManager.LoadScene(sceneName);
     }
 }
