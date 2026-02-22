@@ -14,7 +14,6 @@ public class StartButtonController : MonoBehaviour
 
     public void QuitClick()
     {
-        AudioManager.Instance.PlayEvent2D("ui_QuitGame");
         Application.Quit();
     }
 }
